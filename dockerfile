@@ -1,23 +1,7 @@
-FROM node:23-alpine AS development-dependencies-env
-COPY . /app
-WORKDIR /app
-RUN npm ci
-
-FROM node:23-alpine AS production-dependencies-env
-COPY ./package.json package-lock.json /app/
-WORKDIR /app
-RUN npm ci --omit=dev
-
-FROM node:23-alpine AS build-env
-COPY . /app/
-COPY --from=development-dependencies-env /app/node_modules /app/node_modules
-WORKDIR /app
-RUN npm run build
-
 FROM node:23-alpine
 RUN apk add --no-cache openssl postgresql-client
-COPY ./package.json package-lock.json /app/
-COPY --from=production-dependencies-env /app/node_modules /app/node_modules
-COPY --from=build-env /app/.keystone /app/auth.ts /app/component-blocks.tsx /app/keystone.ts /app/schema.graphql /app/schema.prisma /app/schema.ts /app/
+COPY . /app
 WORKDIR /app
+RUN npm ci --omit=dev
+RUN npm run build
 CMD ["sh", "-c", "npx prisma generate && npm run start"]

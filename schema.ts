@@ -14,13 +14,14 @@ import { type Lists } from ".keystone/types";
 import { BaseListTypeInfo } from "@keystone-6/core/types";
 import { BaseAccessArgs } from "@keystone-6/core/dist/declarations/src/types/config/access-control";
 import { componentBlocks } from "./component-blocks";
+import { ENV } from "./env";
 
 const isAdmin = <T extends BaseListTypeInfo>({ session }: BaseAccessArgs<T>) =>
   Boolean(session?.data.isAdmin);
 const isReadClient = <T extends BaseListTypeInfo>({ session }: BaseAccessArgs<T>) =>
   Boolean(session?.data.email === "read.client")
 
-const isOnProduction = process.env.NODE_ENV === "production";
+const isOnProduction = ENV.NODE_ENV === "production"
 
 export const lists = {
   User: list({
@@ -73,7 +74,9 @@ export const lists = {
           operation: {
             query: ({ session }) => !!session,
             create: isAdmin<Lists.Post.TypeInfo>,
-            update: isAdmin<Lists.Post.TypeInfo> || isReadClient<Lists.Post.TypeInfo>,
+            update: ({ session }) => {
+              return session.data.isAdmin || session.data.email === 'read.client'
+            },
             delete: isAdmin<Lists.Post.TypeInfo>,
           },
         },

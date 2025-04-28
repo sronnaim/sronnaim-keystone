@@ -14,14 +14,14 @@ import { type Lists } from ".keystone/types";
 import { BaseListTypeInfo } from "@keystone-6/core/types";
 import { BaseAccessArgs } from "@keystone-6/core/dist/declarations/src/types/config/access-control";
 import { componentBlocks } from "./component-blocks";
-import { ENV } from "./env";
 
 const isAdmin = <T extends BaseListTypeInfo>({ session }: BaseAccessArgs<T>) =>
   Boolean(session?.data.isAdmin);
 const isReadClient = <T extends BaseListTypeInfo>({ session }: BaseAccessArgs<T>) =>
   Boolean(session?.data.email === "read.client")
+import 'dotenv/config'
 
-const isOnProduction = ENV.NODE_ENV === "production"
+const isOnProduction = process.env.NODE_ENV === "production"
 
 export const lists = {
   User: list({
@@ -36,31 +36,19 @@ export const lists = {
           },
         },
 
-    // this is the fields for our User list
     fields: {
-      // by adding isRequired, we enforce that every User should have a name
-      //   if no name is provided, an error will be displayed
       name: text({ validation: { isRequired: true } }),
 
       email: text({
         validation: { isRequired: true },
-        // by adding isIndexed: 'unique', we're saying that no user can have the same
-        // email as another user - this may or may not be a good idea for your project
         isIndexed: "unique",
       }),
 
       password: password({ validation: { isRequired: true } }),
-
-      // we can use this field to see what Posts this User has authored
-      //   more on that in the Post list below
       posts: relationship({ ref: "Post.author", many: true }),
-
       createdAt: timestamp({
-        // this sets the timestamp to Date.now() when the user is first created
         defaultValue: { kind: "now" },
       }),
-
-      // Admin
       isAdmin: checkbox({
         defaultValue: false,
       }),

@@ -15,6 +15,7 @@ WORKDIR /app
 RUN npm run build
 
 FROM node:23-alpine
+RUN apk add --no-cache openssl postgresql-client
 COPY ./package.json package-lock.json /app/
 COPY --from=production-dependencies-env /app/node_modules /app/node_modules
 COPY --from=build-env /app/.keystone /app/.keystone

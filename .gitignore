@@ -1,0 +1,10 @@
+node_modules
+.keystone/
+keystone.db
+*.log
+
+!.env.example
+!.github
+
+.env
+.next

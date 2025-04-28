@@ -26,15 +26,6 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
     - name: Build and push Docker image
       uses: docker/build-push-action@v3
-      env:
-        NODE_ENV: production
-        DATABASE_URL: ${{ secrets.DATABASE_URL }} 
-        SESSION_SECRET: ${{ secrets.SESSION_SECRET }} 
-        FRONTEND_URL: ${{ vars.FRONTEND_URL }} 
-        CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }} 
-        CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }} 
-        CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }} 
-        APP_PORT: ${{ vars.APP_PORT }} 
       with:
         context: .
         push: true

@@ -1,4 +1,5 @@
 FROM node:23-alpine
+ENV NODE_ENV=production
 RUN apk add --no-cache openssl postgresql-client
 COPY . /app
 WORKDIR /app

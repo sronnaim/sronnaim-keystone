@@ -18,6 +18,6 @@ FROM node:23-alpine
 RUN apk add --no-cache openssl postgresql-client
 COPY ./package.json package-lock.json /app/
 COPY --from=production-dependencies-env /app/node_modules /app/node_modules
-COPY --from=build-env /app/.keystone /app/.keystone
+COPY --from=build-env /app/.keystone /app/auth.ts /app/component-blocks.tsx /app/keystone.ts /app/schema.graphql /app/schema.prisma /app/schema.ts /app/
 WORKDIR /app
 CMD ["sh", "-c", "npx prisma generate && npm run start"]

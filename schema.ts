@@ -17,6 +17,9 @@ import { componentBlocks } from "./component-blocks";
 
 const isAdmin = <T extends BaseListTypeInfo>({ session }: BaseAccessArgs<T>) =>
   Boolean(session?.data.isAdmin);
+const isReadClient = <T extends BaseListTypeInfo>({ session }: BaseAccessArgs<T>) =>
+  Boolean(session?.data.email === "read.client")
+
 const isOnProduction = process.env.NODE_ENV === "production";
 
 export const lists = {
@@ -70,7 +73,7 @@ export const lists = {
           operation: {
             query: ({ session }) => !!session,
             create: isAdmin<Lists.Post.TypeInfo>,
-            update: isAdmin<Lists.Post.TypeInfo>,
+            update: isAdmin<Lists.Post.TypeInfo> || isReadClient<Lists.Post.TypeInfo>,
             delete: isAdmin<Lists.Post.TypeInfo>,
           },
         },
